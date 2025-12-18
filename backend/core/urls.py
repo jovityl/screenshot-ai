@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import health, capture_view
+from .views import health, captured_text, delete_text
 
 urlpatterns = [
     path("health/", health),
-    path("capture/", capture_view),
+    path("captured-text/", captured_text),
+    path("captured-text/<int:pk>/", delete_text), 
 ]
