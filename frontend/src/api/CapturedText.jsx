@@ -1,15 +1,13 @@
-import axios from "axios";
-
-const API_BASE = "http://127.0.0.1:8000/captured-text/";
+import { api } from "./client";
 
 export function listCapturedText() {
-  return axios.get(API_BASE);
+  return api.get("captured-text/");
 }
 
 export function createCapturedText(content) {
-  return axios.post(API_BASE, { content });
+  return api.post("captured-text/", { content });
 }
 
 export function deleteCapturedText(id) {
-  return axios.delete(`${API_BASE}${id}/`)
+  return api.delete(`captured-text/${id}/`);
 }
