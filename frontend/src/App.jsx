@@ -2,6 +2,7 @@ import { useState } from "react";
 import CaptureForm from "./components/CaptureForm";
 import CapturedList from "./components/CapturedList";
 import Login from "./pages/Login"
+import { logout } from "./api/auth"
 
 function hasToken() {
   return !!localStorage.getItem("accessToken");
@@ -21,7 +22,14 @@ export default function App() {
 
   return (
     <div>
-      <h1>Ingest</h1>
+      <button onClick={() => {
+        logout();
+        setAuthed(false);
+      }}>
+        Logout
+      </button>
+
+      <h1>Capture</h1>
       <CaptureForm onCreated={handleCreated} />
       <CapturedList refreshToken={refreshToken} />
     </div>

@@ -25,20 +25,30 @@ def register(request):
 
 @api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
-def captured_text(request):
+def captured_text_list(request):
+    if request.method == "GET":
+        queryset = CapturedText.objects.filter(owner=request.user).order_by("-created_at")
+        serializer = CapturedTextSerializer(queryset, many=True)
+        return Response(serializer.data)
+
     if request.method == "POST":
         serializer = CapturedTextSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save(owner=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    if request.method =="GET":
-        queryset = CapturedText.filter(owner=request.user).order_by("-created_at")
-        serializer = CapturedTextSerializer(queryset, many=True)
-        return Response(serializer.data)
     
-@api_view(["DELETE"])
+
+@api_view(["PATCH", "DELETE"])
 @permission_classes([IsAuthenticated])
-def delete_text(request, pk):
-    obj = get_object_or_404(CapturedText, pk=pk, owner=request.user)  
-    obj.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+def captured_text_detail(request, pk):
+    obj = get_object_or_404(CapturedText, pk=pk, owner=request.user)
+
+    if request.method == "PATCH":
+        serializer = CapturedTextSerializer(obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    if request.method == "DELETE":
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
